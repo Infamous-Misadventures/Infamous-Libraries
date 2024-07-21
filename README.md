@@ -1,4 +1,3 @@
-# Infamous Multiloader Template
+# Infamous Libraries
 
-Based on
-https://github.com/jaredlll08/MultiLoader-Template
+The base for all Infamous Mods.

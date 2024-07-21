@@ -142,9 +142,9 @@ publishMods {
 
     curseforge {
         projectId = ""
-        projectSlug = "infamous_example"
+        projectSlug = "infamous_libraries"
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
-        announcementTitle = "New Infamous Example CurseForge Release"
+        announcementTitle = "New Infamous Libraries CurseForge Release"
 
         getMinecraftVersions().add(minecraft_version)
     }
@@ -152,7 +152,7 @@ publishMods {
     modrinth {
         projectId = ""
         accessToken = providers.environmentVariable("MODRINTH_API_KEY")
-        announcementTitle = "New Infamous Example Modrinth Release"
+        announcementTitle = "New Infamous Libraries Modrinth Release"
 
         getMinecraftVersions().add(minecraft_version)
     }
