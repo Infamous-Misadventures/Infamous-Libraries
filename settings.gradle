@@ -30,3 +30,30 @@ rootProject.name = "Infamous-Libraries"
 include("common")
 include("fabric")
 include("forge")
+
+for (File file in getFile("modules").listFiles()) {
+    if (isModuleDir(file)) {
+        String name = file.name
+        include(name)
+        ProjectDescriptor project = project(":" + name)
+        project.projectDir = getFile("modules/" + name)
+    }
+}
+
+def getFile(String name) {
+    return file(name)
+}
+
+static def isModuleDir(File file) {
+    if (file.isDirectory()) {
+        File[] files = file.listFiles()
+        if (files != null) {
+            for (File subFile in files) {
+                if (subFile.name == "build.gradle") {
+                    return true
+                }
+            }
+        }
+    }
+    return false
+}
