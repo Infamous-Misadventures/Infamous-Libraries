@@ -2,6 +2,7 @@ package com.infamousmisadventures.infamouslibraries.registry;
 
 import com.google.common.collect.ImmutableList;
 import com.infamousmisadventures.infamouslibraries.platform.Services;
+import com.infamousmisadventures.infamouslibraries.summons.registry.ILSummonsAttributes;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -16,6 +17,7 @@ public class ILAttributes {
     private static final ObjectArrayList<Supplier<Attribute>> ATTRIBUTES = new ObjectArrayList<>();
 
     public static void register() {
+        ILSummonsAttributes.register();
     }
 
     public static ImmutableList<Supplier<Attribute>> getAttributes() {

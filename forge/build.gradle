@@ -4,6 +4,9 @@ plugins {
     id("org.parchmentmc.librarian.forgegradle") version("${forge_mappings_channel_plugin_version}")
     id("me.modmuss50.mod-publish-plugin") version("${publisher_plugin_version}")
 }
+configurations {
+    implementation.extendsFrom shadow
+}
 
 base {
     archivesName = "${mod_name}-${minecraft_version}-forge"
@@ -14,6 +17,9 @@ mixin {
 
     config("${mod_id}.mixins.json")
     config("${mod_id}.forge.mixins.json")
+    config("${mod_id}-core.mixins.json")
+    project(":modules").subprojects.stream()
+            .forEach { commonProj -> config("${mod_id}-${commonProj.name}.mixins.json")}
 }
 
 minecraft {
@@ -39,6 +45,9 @@ minecraft {
                 modClientRun {
                     source sourceSets.main
                     source project(":common").sourceSets.main
+                    source project(":core").sourceSets.main
+                    project(":modules").subprojects.stream()
+                            .forEach { commonProj -> source commonProj.sourceSets.main}
                 }
             }
         }
@@ -56,6 +65,9 @@ minecraft {
                 modServerRun {
                     source sourceSets.main
                     source project(":common").sourceSets.main
+                    source project(":core").sourceSets.main
+                    project(":modules").subprojects.stream()
+                            .forEach { moduleProj -> source moduleProj.sourceSets.main}
                 }
             }
         }
@@ -87,11 +99,16 @@ dependencies {
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
     annotationProcessor("org.spongepowered:mixin:${mixin_version}:processor")
 
+    compileOnly project(":core")
     compileOnly project(":common")
+    project(":modules").subprojects.stream()
+            .forEach { commonProj -> compileOnly commonProj}
+
+    shadow(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6"))
 
     // Dependencies (Optional)
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${forge_jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${forge_jei_version}")
+    implementation fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${forge_jei_version}")
+    implementation fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${forge_jei_version}")
 
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${forge_jei_version}")
 
@@ -109,11 +126,23 @@ dependencies {
 }
 
 tasks.withType(JavaCompile).configureEach { source(project(":common").sourceSets.main.allSource) }
+tasks.withType(JavaCompile).configureEach { source(project(":core").sourceSets.main.allSource) }
+tasks.withType(JavaCompile).configureEach { project(":modules").subprojects.stream().forEach{ moduleProj -> source(moduleProj.sourceSets.main.allSource)} }
 tasks.withType(Javadoc).configureEach { source(project(":common").sourceSets.main.allJava) }
-tasks.named("sourcesJar", Jar) { from(project(":common").sourceSets.main.allSource) }
+tasks.withType(Javadoc).configureEach { source(project(":core").sourceSets.main.allJava) }
+tasks.withType(Javadoc).configureEach { project(":modules").subprojects.stream().forEach{ moduleProj -> source(moduleProj.sourceSets.main.allJava)} }
+tasks.named("sourcesJar", Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(project(":common").sourceSets.main.allSource)
+    from(project(":core").sourceSets.main.allSource)
+    project(":modules").subprojects.stream().forEach{ moduleProj -> from(moduleProj.sourceSets.main.allSource)}
+}
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from project(":common").sourceSets.main.resources
+    from project(":core").sourceSets.main.resources
+    project(":modules").subprojects.stream().forEach{ moduleProj -> from moduleProj.sourceSets.main.resources}
 }
 
 jar.finalizedBy('reobfJar')

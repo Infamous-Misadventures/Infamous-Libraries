@@ -9,6 +9,10 @@ base {
 
 repositories {
     maven { url = "https://mvn.devos.one/snapshots/" }
+    maven {
+        name = "Fuzs Mod Resources"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
 }
 
 dependencies {
@@ -25,6 +29,10 @@ dependencies {
     // Dependencies (Mandatory)
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
     implementation project(":common")
+    implementation project(":core")
+    implementation project(":modules:summons")
+    modLocalRuntime "fuzs.forgeconfigscreens:forgeconfigscreens-fabric:${forge_config_api_version}"
+    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_version}"
 
     // Dependencies (Optional)
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${fabric_jei_version}")

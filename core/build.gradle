@@ -1,0 +1,42 @@
+plugins {
+    id("org.spongepowered.gradle.vanilla")
+}
+base {
+    archivesName = "${mod_name}-${minecraft_version}-${project.name}"
+}
+configurations {
+    implementation.extendsFrom shadow
+}
+
+repositories {
+    maven {
+        name = "Fuzs Mod Resources"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
+}
+
+minecraft {
+    version(minecraft_version)
+
+    if (file("src/main/resources/${mod_id}-${project.name}.accesswidener").exists()){
+        accessWideners(file("src/main/resources/${mod_id}-${project.name}.accesswidener"))
+    }
+}
+
+dependencies {
+    // Base
+    compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = base.archivesName.get()
+            version = mod_version
+
+            artifact jar
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}

@@ -4,6 +4,16 @@ plugins {
 base {
     archivesName = "${mod_name}-${minecraft_version}-common"
 }
+configurations {
+    implementation.extendsFrom shadow
+}
+
+repositories {
+    maven {
+        name = "Fuzs Mod Resources"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
+}
 
 minecraft {
     version(minecraft_version)
@@ -14,9 +24,14 @@ minecraft {
 }
 
 dependencies {
+    // Project
+    implementation project(":core")
+    implementation project(":modules:summons")
     // Base
     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
     implementation "mysticdrew:common-networking-common:${common_networking_version}"
+    shadow(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6"))
+    compileOnly "fuzs.forgeconfigapiport:forgeconfigapiport-common:${forge_config_api_version}"
 }
 
 publishing {

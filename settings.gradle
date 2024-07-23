@@ -27,15 +27,17 @@ plugins {
 
 rootProject.name = "Infamous-Libraries"
 
+include("core")
 include("common")
 include("fabric")
 include("forge")
+include("modules")
 
 for (File file in getFile("modules").listFiles()) {
     if (isModuleDir(file)) {
         String name = file.name
-        include(name)
-        ProjectDescriptor project = project(":" + name)
+        include("modules:"+name)
+        ProjectDescriptor project = project(":modules:" + name)
         project.projectDir = getFile("modules/" + name)
     }
 }
